@@ -76,14 +76,14 @@ code {
 
 st.markdown(page_bg_img, unsafe_allow_html=True)
 
-def get_dataset(name):
+def get_dataset(name_or_file):
     # Base URL for raw content in GitHub repository
-    base_url = "https://raw.githubusercontent.com/chandrakanthkunta/ann-playground/main/datasets/"
+    base_url = "https://github.com/chandrakanthkunta/ANN-playground/raw/main/datasets/"
     
     file_paths = {
         "ushape": "1.ushape.csv",
-        "concerticcir1": "2.concerticcir1.csv",
-        "concertriccir2": "3.concertriccir2.csv",
+        "concentriccir1": "2.concentriccir1.csv",
+        "concentriccir2": "3.concentriccir2.csv",
         "linearsep": "4.linearsep.csv",
         "outlier": "5.outlier.csv",
         "overlap": "6.overlap.csv",
@@ -91,23 +91,18 @@ def get_dataset(name):
         "twospirals": "8.twospirals.csv",
         "random": "9.random.csv"
     }
-        
-        if name_or_file in datasets:
-            try:
-                data = pd.read_csv(datasets[name_or_file], header=None)
-                X = data.iloc[:, :-1].values
-                y = data.iloc[:, -1].values
-                return X, y
-            except FileNotFoundError:
-                st.error(f"Dataset file not found: {datasets[name_or_file]}")
-                return None, None
-            except Exception as e:
-                st.error(f"Error loading dataset: {e}")
-                return None, None
-        else:
-            st.error(f"Dataset name not recognized: {name_or_file}")
+
+    if name_or_file in file_paths:
+        try:
+            url = base_url + file_paths[name_or_file]
+            data = pd.read_csv(url, header=None)
+            X = data.iloc[:, :-1].values
+            y = data.iloc[:, -1].values
+            return X, y
+        except Exception as e:
+            st.error(f"Error loading dataset: {e}")
             return None, None
-    else:  # Assume it's a file object
+    elif hasattr(name_or_file, 'read'):
         try:
             data = pd.read_csv(name_or_file, header=None)
             X = data.iloc[:, :-1].values
@@ -116,6 +111,9 @@ def get_dataset(name):
         except Exception as e:
             st.error(f"Error reading uploaded file: {e}")
             return None, None
+    else:
+        st.error(f"Dataset name not recognized: {name_or_file}")
+        return None, None
 
 def create_model(input_dim, learning_rate, activation, num_layers, num_neurons, regularization, reg_rate, problem_type):
     model = Sequential()
@@ -159,11 +157,14 @@ def plot_decision_boundary(model, X, y):
     Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
     Z = Z.reshape(xx.shape)
     
-    plt.contourf(xx, yy, Z, alpha=0.8)
-    plt.scatter(X[:, 0], X[:, 1], c=y, edgecolor='k', marker='o')
+    plt.figure(figsize=(8, 6))
+    plt.contourf(xx, yy, Z, alpha=0.8, cmap='coolwarm')
+    plt.scatter(X[:, 0], X[:, 1], c=y, edgecolor='k', marker='o', cmap='coolwarm')
     plt.xlabel('Feature 1')
     plt.ylabel('Feature 2')
     plt.title('Decision Boundary')
+    plt.colorbar()
+    plt.show()
 
 # Page selector
 page = st.sidebar.selectbox("Select Page", ["Home", "Neural Network Playground"])
@@ -175,7 +176,7 @@ if page == "Home":
     **Purpose:**  
     The Interactive Neural Network Playground is a web application designed to help you visualize, configure, and experiment with neural network models in real-time. Whether you're a data science enthusiast, a student, or a researcher, this playground offers an intuitive interface to dive into the world of machine learning.
     """)
-    
+
     st.subheader("Features")
     st.write("""
     **1. Intuitive Interface**
@@ -216,7 +217,6 @@ if page == "Home":
     **- Visual Feedback:** Understand model behavior through real-time visualizations and performance metrics.
     **- Experiment Freely:** Test different configurations and datasets to see how changes impact model outcomes.
     """)
-
 
     st.subheader("Contact Us")
     st.write("""
