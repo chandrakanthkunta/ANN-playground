@@ -76,19 +76,21 @@ code {
 
 st.markdown(page_bg_img, unsafe_allow_html=True)
 
-def get_dataset(name_or_file):
-    if isinstance(name_or_file, str):
-        datasets = {
-            "ushape": "/Users/hemanthkunta/Downloads/8 csv dataset/1.ushape.csv",
-            "concerticcir1": "/Users/hemanthkunta/Downloads/8 csv dataset/2.concerticcir1.csv",
-            "concertriccir2": "/Users/hemanthkunta/Downloads/8 csv dataset/3.concertriccir2.csv",
-            "linearsep": "/Users/hemanthkunta/Downloads/8 csv dataset/4.linearsep.csv",
-            "outlier": "/Users/hemanthkunta/Downloads/8 csv dataset/5.outlier.csv",
-            "overlap": "/Users/hemanthkunta/Downloads/8 csv dataset/6.overlap.csv",
-            "xor": "/Users/hemanthkunta/Downloads/8 csv dataset/7.xor.csv",
-            "twospirals": "/Users/hemanthkunta/Downloads/8 csv dataset/8.twospirals.csv",
-            "random": "/Users/hemanthkunta/Downloads/8 csv dataset/9.random.csv"
-        }
+def get_dataset(name):
+    # Base URL for raw content in GitHub repository
+    base_url = "https://raw.githubusercontent.com/chandrakanthkunta/ann-playground/main/datasets/"
+    
+    file_paths = {
+        "ushape": "1.ushape.csv",
+        "concerticcir1": "2.concerticcir1.csv",
+        "concertriccir2": "3.concertriccir2.csv",
+        "linearsep": "4.linearsep.csv",
+        "outlier": "5.outlier.csv",
+        "overlap": "6.overlap.csv",
+        "xor": "7.xor.csv",
+        "twospirals": "8.twospirals.csv",
+        "random": "9.random.csv"
+    }
         
         if name_or_file in datasets:
             try:
